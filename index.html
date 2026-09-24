@@ -253,6 +253,107 @@
     font-family: Georgia, serif;
   }
 
+  /* Guestbook */
+  .guestbook-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .guestbook-form input {
+    flex: 1;
+    min-width: 140px;
+    padding: 13px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--peach);
+    background: var(--cream);
+    color: var(--brown);
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  .guestbook-form input:focus {
+    outline: none;
+    border-color: var(--terracotta);
+  }
+
+  .guestbook-form button {
+    padding: 13px 30px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--terracotta), var(--amber));
+    color: var(--warm-white);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .guestbook-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px var(--shadow);
+  }
+
+  .guestbook-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .guestbook-error {
+    color: var(--terracotta-dark);
+    font-size: 0.9rem;
+    margin: -8px 0 20px;
+  }
+
+  .guestbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 440px;
+    overflow-y: auto;
+  }
+
+  .guestbook-item {
+    background: var(--cream);
+    border: 1px solid rgba(224, 122, 95, 0.12);
+    border-radius: 14px;
+    padding: 16px 20px;
+  }
+
+  .guestbook-item .g-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .guestbook-item .g-name {
+    font-weight: 700;
+    color: var(--terracotta-dark);
+  }
+
+  .guestbook-item .g-time {
+    font-size: 0.78rem;
+    color: var(--brown-soft);
+    white-space: nowrap;
+  }
+
+  .guestbook-item .g-message {
+    color: var(--brown);
+    font-size: 0.98rem;
+    word-break: break-word;
+  }
+
+  .guestbook-empty {
+    color: var(--brown-soft);
+    text-align: center;
+    padding: 20px 0;
+  }
+
   /* Footer */
   footer {
     text-align: center;
@@ -338,11 +439,108 @@
       <blockquote>把每一件小事做好，就是我最大的成就感。</blockquote>
     </section>
 
+    <section id="guestbook">
+      <h2 class="section-title">留言板</h2>
+      <p class="section-sub">路過的話，留一句話給我吧</p>
+      <div class="card">
+        <form id="guestbook-form" class="guestbook-form">
+          <input type="text" id="guest-name" placeholder="你的名字" maxlength="40" required>
+          <input type="text" id="guest-message" placeholder="留一句話給 Peggy..." maxlength="280" required>
+          <button type="submit">送出</button>
+        </form>
+        <p id="guestbook-error" class="guestbook-error" hidden></p>
+        <div id="guestbook-list" class="guestbook-list">
+          <p class="guestbook-empty">載入中...</p>
+        </div>
+      </div>
+    </section>
+
   </div>
 
   <footer>
     made with <span class="heart">♥</span> by Peggy
   </footer>
+
+  <script>
+    const form = document.getElementById('guestbook-form');
+    const nameInput = document.getElementById('guest-name');
+    const messageInput = document.getElementById('guest-message');
+    const list = document.getElementById('guestbook-list');
+    const errorEl = document.getElementById('guestbook-error');
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[c]));
+    }
+
+    function formatTime(iso) {
+      try {
+        const d = new Date(iso.replace(' ', 'T'));
+        return d.toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    function renderMessages(messages) {
+      if (!messages.length) {
+        list.innerHTML = '<p class="guestbook-empty">還沒有留言，當第一個留言的人吧！</p>';
+        return;
+      }
+      list.innerHTML = messages.map((m) => `
+        <div class="guestbook-item">
+          <div class="g-head">
+            <span class="g-name">${escapeHtml(m.name)}</span>
+            <span class="g-time">${formatTime(m.created_at)}</span>
+          </div>
+          <div class="g-message">${escapeHtml(m.message)}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadMessages() {
+      try {
+        const res = await fetch('/api/messages');
+        const data = await res.json();
+        renderMessages(data);
+      } catch (err) {
+        list.innerHTML = '<p class="guestbook-empty">留言載入失敗，稍後再試一次。</p>';
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.hidden = true;
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+      if (!name || !message) return;
+
+      const submitBtn = form.querySelector('button');
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch('/api/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, message }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || '送出失敗');
+        }
+        nameInput.value = '';
+        messageInput.value = '';
+        await loadMessages();
+      } catch (err) {
+        errorEl.textContent = err.message || '送出失敗，請稍後再試。';
+        errorEl.hidden = false;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    loadMessages();
+  </script>
 
 </body>
 </html>

@@ -1,0 +1,15 @@
+{
+  "name": "my-first-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Peggy's personal intro page with a guestbook",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
