@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peggy | Executive Assistant</title>
+<style>
+  :root {
+    --cream: #fdf6ee;
+    --warm-white: #fffaf3;
+    --terracotta: #e07a5f;
+    --terracotta-dark: #c65f45;
+    --amber: #f2a65a;
+    --brown: #4a3728;
+    --brown-soft: #8a6f5c;
+    --peach: #ffe8d6;
+    --shadow: rgba(196, 106, 69, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, var(--cream) 0%, #fdefe0 100%);
+    color: var(--brown);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* decorative blobs */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .blob-1 { width: 380px; height: 380px; background: var(--amber); top: -120px; right: -100px; }
+  .blob-2 { width: 320px; height: 320px; background: var(--terracotta); bottom: -100px; left: -80px; }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header / Hero */
+  header {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .avatar {
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), var(--terracotta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 58px;
+    font-weight: 700;
+    color: var(--warm-white);
+    box-shadow: 0 20px 40px var(--shadow);
+    margin-bottom: 32px;
+    border: 6px solid var(--warm-white);
+    animation: floatIn 0.9s ease-out;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 13px;
+    color: var(--terracotta-dark);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    font-weight: 800;
+    color: var(--brown);
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  h1 span {
+    background: linear-gradient(90deg, var(--terracotta), var(--amber));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .role {
+    font-size: 1.35rem;
+    color: var(--brown-soft);
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+
+  .tag-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tag {
+    background: var(--warm-white);
+    border: 1px solid var(--peach);
+    color: var(--terracotta-dark);
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px var(--shadow);
+  }
+
+  .scroll-hint {
+    margin-top: 56px;
+    font-size: 1.6rem;
+    color: var(--terracotta);
+    animation: bounce 1.8s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Sections */
+  section {
+    padding: 70px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--brown);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--brown-soft);
+    margin-bottom: 48px;
+    font-size: 1.05rem;
+  }
+
+  .card {
+    background: var(--warm-white);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 14px 40px var(--shadow);
+    border: 1px solid rgba(224, 122, 95, 0.12);
+  }
+
+  .about-text {
+    font-size: 1.12rem;
+    color: var(--brown);
+  }
+
+  .about-text strong {
+    color: var(--terracotta-dark);
+  }
+
+  /* Grid cards */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+  }
+
+  .feature {
+    background: var(--warm-white);
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 10px 28px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(224, 122, 95, 0.1);
+  }
+
+  .feature:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 36px var(--shadow);
+  }
+
+  .feature .icon {
+    font-size: 2.4rem;
+    margin-bottom: 16px;
+  }
+
+  .feature h3 {
+    font-size: 1.15rem;
+    color: var(--brown);
+    margin-bottom: 8px;
+  }
+
+  .feature p {
+    color: var(--brown-soft);
+    font-size: 0.95rem;
+  }
+
+  /* Quote */
+  .quote-section {
+    text-align: center;
+  }
+
+  blockquote {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--terracotta-dark);
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px;
+  }
+
+  blockquote::before,
+  blockquote::after {
+    content: '"';
+    font-size: 3rem;
+    color: var(--amber);
+    opacity: 0.6;
+    font-family: Georgia, serif;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 48px 24px 60px;
+    color: var(--brown-soft);
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer .heart {
+    color: var(--terracotta);
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 28px 22px; }
+    section { padding: 50px 20px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <header>
+    <div class="eyebrow">Hello, Nice to meet you</div>
+    <div class="avatar">P</div>
+    <h1>我是 <span>Peggy</span></h1>
+    <p class="role">Executive Assistant ・ 高效率的幕後推手</p>
+    <div class="tag-row">
+      <span class="tag">🗂️ 行程管理達人</span>
+      <span class="tag">☕ 工作熱愛者</span>
+      <span class="tag">✨ 細節控</span>
+    </div>
+    <div class="scroll-hint">↓</div>
+  </header>
+
+  <div class="container">
+
+    <section id="about">
+      <h2 class="section-title">關於我</h2>
+      <p class="section-sub">簡單認識一下我這個人</p>
+      <div class="card">
+        <p class="about-text">
+          嗨，我是 <strong>Peggy</strong>，目前擔任 <strong>Executive Assistant（executive assistant）</strong>，
+          負責協助主管處理行程、溝通與各種大小事務，讓一切都能順暢運轉。
+          我是一個很喜歡工作的人 —— 對我來說，把任務安排得井井有條、
+          在忙碌中找到節奏，是一件很有成就感的事。無論是複雜的行事曆、
+          緊急的協調，還是繁瑣的細節，我都樂在其中，享受把事情做好的過程。
+        </p>
+      </div>
+    </section>
+
+    <section id="highlights">
+      <h2 class="section-title">我的特質</h2>
+      <p class="section-sub">幾個能代表我的關鍵字</p>
+      <div class="grid">
+        <div class="feature">
+          <div class="icon">💼</div>
+          <h3>熱愛工作</h3>
+          <p>享受高效解決問題的過程，越忙越有動力。</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🧭</div>
+          <h3>條理分明</h3>
+          <p>擅長統籌安排，讓複雜的事務變得清晰有序。</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🤝</div>
+          <h3>可靠夥伴</h3>
+          <p>是主管與團隊之間值得信賴的溝通橋樑。</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🌟</div>
+          <h3>注重細節</h3>
+          <p>相信魔鬼藏在細節裡，力求每個環節都到位。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-section">
+      <blockquote>把每一件小事做好，就是我最大的成就感。</blockquote>
+    </section>
+
+  </div>
+
+  <footer>
+    made with <span class="heart">♥</span> by Peggy
+  </footer>
+
+</body>
+</html>
