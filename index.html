@@ -77,6 +77,13 @@
     margin-bottom: 32px;
     border: 6px solid var(--warm-white);
     animation: floatIn 0.9s ease-out;
+    overflow: hidden;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   @keyframes floatIn {
@@ -273,7 +280,7 @@
 
   <header>
     <div class="eyebrow">Hello, Nice to meet you</div>
-    <div class="avatar">P</div>
+    <div class="avatar"><img src="maltese.png" alt="馬爾濟斯狗照片"></div>
     <h1>我是 <span>Peggy</span></h1>
     <p class="role">Executive Assistant ・ 高效率的幕後推手</p>
     <div class="tag-row">
